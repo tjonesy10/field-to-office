@@ -205,10 +205,14 @@ Runs 3 fictional text-only reports, one per job, through the same pipeline, with
 6. Report date can't default to today in Forms. Blank means the submission date.
 7. All times are America/New_York.
 8. The 15 minutes saved per report is an illustrative assumption, not a measurement.
+9. **Unknown job** (a Job value not in the Jobs tab): Gemini still runs on the report text so nothing is lost. Confirmed 2026-11-03 after build.
+10. **total_hours mismatch** (the total differs from the sum of crew hours): the row is still `Processed`. Confirmed 2026-11-03.
+11. **confidence outside 0-1** counts as a schema mismatch, so the row is handled like invalid JSON (`Needs review`). Confirmed 2026-11-03.
+12. **OAuth scope:** the script needs full Drive access (`https://www.googleapis.com/auth/drive`), because that's the only way to move Form uploads. This is acceptable on a personal demo account. In production, review the scope with IT. Confirmed 2026-11-03.
 
 ## Open questions
 
-None blocking. Minor items are logged as assumptions 5–8 above.
+None blocking. Minor items are logged as assumptions 5–12 above.
 
 ## ADRs
 
