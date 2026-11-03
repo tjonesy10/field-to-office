@@ -1,12 +1,12 @@
 # 0003 Gemini multimodal extraction
 
-**Status:** Accepted (2026-11-03)
+**Status:** Accepted (model choice superseded by 0006) (2026-11-03)
 
 ## Context
 Reports mix free text, photos, and voice notes. We need structured output (crew hours, work done, issues, possible change orders, shortages) from one call that Apps Script can make with `UrlFetchApp`.
 
 ## Decision
-Call Gemini 2.5 Flash through the Generative Language REST API, with text, images, and audio sent inline in one request. Enforce a JSON `responseSchema`. The AI Studio API key lives in Script Property `GEMINI_API_KEY` and is never committed.
+Call Gemini 2.5 Flash (model choice superseded by [ADR 0006](0006-gemini-model-3-5-flash-lite.md)) through the Generative Language REST API, with text, images, and audio sent inline in one request. Enforce a JSON `responseSchema`. The AI Studio API key lives in Script Property `GEMINI_API_KEY` and is never committed.
 
 ## Reasoning
 - One model handles text, images, and audio. There's no separate transcription step.
