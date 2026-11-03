@@ -206,6 +206,21 @@ test('samples cover three jobs and include one change-order phrase and one short
   assert.match(text, /short 200 ft of 3\/4 EMT, need by Thursday/);
 });
 
+test('gemini model defaults to gemini-3.5-flash-lite and accepts an override', () => {
+  const logic = loadLogic();
+  const def = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent';
+  assert.equal(logic.DEFAULT_GEMINI_MODEL, 'gemini-3.5-flash-lite');
+  assert.equal(logic.GEMINI_URL, def);
+  assert.equal(logic.geminiModelId(null), 'gemini-3.5-flash-lite');
+  assert.equal(logic.geminiModelId(''), 'gemini-3.5-flash-lite');
+  assert.equal(logic.geminiModelId('   '), 'gemini-3.5-flash-lite');
+  assert.equal(logic.geminiGenerateUrl(''), def);
+  assert.equal(
+    logic.geminiGenerateUrl('gemini-test-model'),
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-test-model:generateContent'
+  );
+});
+
 test('gemini request uses the schema, temperature 0.2, and no API key', () => {
   const logic = loadLogic();
   const prompt = logic.buildPrompt({

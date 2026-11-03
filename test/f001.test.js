@@ -218,6 +218,25 @@ test('AT3 a second setup does not duplicate tabs, folders, the form, or the trig
   assert.equal(countNamed(jobsFolder, J2401), 1);
 });
 
+test('GEMINI_MODEL overrides the model and a blank property keeps the default', () => {
+  const { world, app } = ready();
+  const def = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent';
+  queue(world, geminiOk(baseExtraction({ summary: 'Default model.' })));
+  submit(app, { text: 'default model' });
+  assert.equal(world.url.calls[0].url, def);
+  world.props.setProperty('GEMINI_MODEL', '   ');
+  queue(world, geminiOk(baseExtraction({ summary: 'Blank model.' })));
+  submit(app, { text: 'blank model property' });
+  assert.equal(world.url.calls[1].url, def);
+  world.props.setProperty('GEMINI_MODEL', 'gemini-test-model');
+  queue(world, geminiOk(baseExtraction({ summary: 'Override model.' })));
+  submit(app, { text: 'override model' });
+  assert.equal(
+    world.url.calls[2].url,
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-test-model:generateContent'
+  );
+});
+
 test('AT4 a text-only submission is logged first, then processed from one Gemini call', () => {
   const { world, app } = ready();
   const response = geminiOk(baseExtraction({ summary: 'Service upgrade feeder pull.', total_hours: 24 }));
