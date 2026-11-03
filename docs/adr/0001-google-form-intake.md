@@ -16,7 +16,7 @@ Foremen submit daily reports through one Google Form. It has fixed fields and op
 
 ## Rejected alternatives and why
 - **Gmail intake (email a report address):** subjects and bodies are unstructured, so the job match is a guess. It needs mailbox polling, and attachment and signature parsing are noisy. It's also harder to demo reliably.
-- **Google Chat app:** needs a Workspace account and a Chat app configuration in Google Cloud. The bot account is consumer Gmail, so it isn't available tonight. Chat may be the better UX later.
+- **Google Chat app:** needs a Workspace account and a Chat app configuration in Google Cloud. The demo account is consumer Gmail, so it isn't available tonight. Chat may be the better UX later.
 - **AppSheet:** a good mobile form with offline mode, but it's another platform to license and govern. It's also more setup than tonight allows. Revisit it if foremen need offline capture.
 
 ## Consequences

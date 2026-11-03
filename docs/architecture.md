@@ -1,6 +1,6 @@
 # Architecture: Field-to-Office
 
-One Apps Script project bound to one Google Sheet, running in a dedicated personal Gmail account. There are no servers.
+One Apps Script project bound to one Google Sheet, running in Cosmo's personal (consumer, non-Workspace) Google account. There are no servers.
 
 ## Components
 1. **Google Form:** the foreman's intake. Responses go to the Sheet, and uploads go to the Form's Drive folder.

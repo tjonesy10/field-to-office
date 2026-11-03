@@ -192,7 +192,7 @@ Runs 3 fictional text-only reports, one per job, through the same pipeline, with
 
 ## Assumptions
 
-1. **Run location:** a dedicated personal Gmail account created for the bots (not Cosmo's own account, and not Workspace). Its holder pastes the script into a Sheet and runs Setup. The engineer never needs access to the account. *The account's existence is to be confirmed by Groko.*
+1. **Run location:** Cosmo's own personal Google account (consumer, not Workspace). Cosmo pastes the script into a Sheet, runs Setup, creates the Gemini API key in that account, and enters it himself as Script Property `GEMINI_API_KEY`. The engineer never needs access to the account or the key. *Confirmed by Cosmo via Groko, 2026-11-03.*
 2. **Consumer-account limits apply:**
    - no domain-wide features (no shared drives, no domain-restricted Forms, no admin console)
    - a 6-min execution limit per run

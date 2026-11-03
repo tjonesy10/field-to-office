@@ -3,7 +3,7 @@
 **Status:** Accepted (2026-11-03)
 
 ## Context
-The role owns business apps and workflow automation on a Google Workspace stack. The demo must be built tonight, run in a dedicated personal Gmail account, and need no servers or credentials beyond one API key. It is a show-and-tell piece, not a production purchase.
+The role owns business apps and workflow automation on a Google Workspace stack. The demo must be built tonight, run in a personal (consumer) Google account, and need no servers or credentials beyond one API key. It is a show-and-tell piece, not a production purchase.
 
 ## Decision
 Build the workflow as one Apps Script project bound to the Google Sheet, using an installable `onFormSubmit` trigger and built-in services only.
