@@ -1,13 +1,12 @@
 # Field-to-Office
 
 Foremen's daily reports arrive as free text, paper, or photos on a phone, so PMs retype them while possible change orders are noticed late and
-material shortages are found on site. Field-to-Office, a demo for the Operational System Applications & AI Manager application at United Electric
-Company, turns each daily report into a Job Log, crew hours, and a Drive report folder, and flags possible change orders and material shortages for
-PM approval.
+material shortages are found on site. Field-to-Office turns each daily report into a Job Log, crew hours, and a Drive report folder for an
+electrical contractor running on Google Workspace, and flags possible change orders and material shortages for PM approval.
 
-> **Demo video:** _link to be added by Cosmo_
+> **Demo video:** _link to be added_
 >
-> **Live Sheet (view-only):** _link to be added by Cosmo_
+> **Live Sheet (view-only):** _link to be added_
 
 Jobs, people, and reports in this repo are fictional. Domain terms follow [docs/GLOSSARY.md](docs/GLOSSARY.md). Product intent is in [docs/prd.md](docs/prd.md).
 
@@ -157,8 +156,8 @@ stands in for Spreadsheet, Form, Drive, and UrlFetch when `node --test` runs. `a
 Each feature lives in `docs/features/<id>/`. The planner writes `SPEC.md`. The engineer writes the code and `TEST_REPORT.md`. `HANDOFF.md` is an append-only log of each step. Decisions that
 should outlive one feature are ADRs in `docs/adr/`. Code and docs reach `main` by pull request, and Cosmo approves the merge.
 
-- Planner: blueprint writes the spec and the ADRs. The F001 spec names this role planner.
-- Engineer: forge writes `App.js`, `Logic.js`, and the test report. The F001 spec names this role builder.
+- Planner: blueprint writes the spec and the ADRs. The F001 spec calls blueprint the planner.
+- Engineer: forge writes `App.js`, `Logic.js`, and the test report. The F001 spec calls forge the builder.
 - Coordinator: Groko carries confirmations and the operator-reported live run back to Cosmo, who approves merges.
 
 F001, the daily field report, is the feature in the repo: [SPEC](docs/features/F001-daily-field-report/SPEC.md), [test report](docs/features/F001-daily-field-report/TEST_REPORT.md), [handoff](docs/features/F001-daily-field-report/HANDOFF.md).
