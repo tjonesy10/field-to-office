@@ -4,10 +4,6 @@ Foremen's daily reports arrive as free text, paper, or photos on a phone, so PMs
 material shortages are found on site. Field-to-Office turns each daily report into a Job Log, crew hours, and a Drive report folder for an
 electrical contractor running on Google Workspace, and flags possible change orders and material shortages for PM approval.
 
-> **Demo video:** _link to be added_
->
-> **Live Sheet (view-only):** _link to be added_
-
 Jobs, people, and reports in this repo are fictional. Domain terms follow [docs/GLOSSARY.md](docs/GLOSSARY.md). Product intent is in [docs/prd.md](docs/prd.md).
 
 ## How it works
@@ -57,7 +53,7 @@ Column names, types, and fictional examples are in [docs/data-dictionary.md](doc
 - **Flags.** One row per possible change order or material shortage. Status is Pending, Approved, or Rejected; the PM decides, and types PM Note,
   Reviewed By, and Reviewed At. A change order keeps the foreman's evidence quote.
 - **Dashboard.** Formulas only (FILTER, QUERY, COUNTIF): today's reports, hours by job, open flags, and the pilot scorecard. Est. minutes saved
-  multiplies processed reports by the input cell Minutes saved per report, which is 15 and labelled "Assumption, not measured".
+  multiplies processed reports by the input cell Minutes saved per report, an unmeasured assumption.
 - **Jobs.** Config written by `setup()`: Job #, Job Name, PM, Drive Folder ID, and Active. The Form's Job dropdown is built from these rows, and setup
   seeds three fictional jobs.
 
@@ -105,7 +101,7 @@ fictional jobs, names, photos, and daily reports into the Form.
   The `responseSchema` stays. [ADR 0006](docs/adr/0006-gemini-model-3-5-flash-lite.md) confirms that production choice.
 
 What may go into the model, what must stay out, the human-review rule, and the pilot scorecard are in the [AI use policy and scorecard](docs/ai-use-policy-and-scorecard.md). The scorecard targets in that
-document are illustrative and are set with PMs before a pilot. The policy's "minutes saved per report" figure is the same 15-minute assumption,
+document are illustrative and are set with PMs before a pilot. The policy's "minutes saved per report" figure is the same unmeasured assumption,
 labelled as unmeasured until a PM time study exists.
 
 ## Repo layout
