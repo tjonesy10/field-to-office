@@ -364,6 +364,17 @@ function ensureFormats_() {
   sheetByName_('Crew Hours').getRange('B2:B1000').setNumberFormat('yyyy-mm-dd');
   sheetByName_('Flags').getRange('C2:C1000').setNumberFormat('yyyy-mm-dd');
   sheetByName_('Flags').getRange('N2:N1000').setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  var dash = sheetByName_('Dashboard');
+  var todayRows = DASH_ROWS.hoursLabel - DASH_ROWS.todayFormula;
+  dash.getRange(DASH_ROWS.todayFormula, JOB_LOG_HEADERS.indexOf('Submitted At') + 1, todayRows, 1)
+    .setNumberFormat('yyyy-mm-dd hh:mm');
+  dash.getRange(DASH_ROWS.todayFormula, JOB_LOG_HEADERS.indexOf('Report Date') + 1, todayRows, 1)
+    .setNumberFormat('yyyy-mm-dd');
+  var flagRows = DASH_ROWS.scoreLabel - DASH_ROWS.flagsList;
+  dash.getRange(DASH_ROWS.flagsList, FLAG_HEADERS.indexOf('Report Date') + 1, flagRows, 1)
+    .setNumberFormat('yyyy-mm-dd');
+  dash.getRange(DASH_ROWS.flagsList, FLAG_HEADERS.indexOf('Reviewed At') + 1, flagRows, 1)
+    .setNumberFormat('yyyy-mm-dd hh:mm:ss');
 }
 
 function writeJobs_(sheet, jobs) {
