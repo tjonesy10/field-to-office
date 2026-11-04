@@ -40,7 +40,7 @@ In the Apps Script editor: Project Settings → Script properties → Add script
 - Name: `GEMINI_API_KEY`
 - Value: paste the key only in that value field.
 
-Do not put the key in code, in the Sheet, or in chat. The script reads that property and sends it only as the `x-goog-api-key` header on the Gemini request.
+Do not put the key in code, in the Sheet, or in chat. The script reads that property and sends it only as the `x-goog-api-key` header on the Gemini request. Optional: add a script property named GEMINI_MODEL set to another model id; leave it unset to use gemini-3.5-flash-lite.
 
 ## 4. Run Setup and approve the prompts
 

@@ -4,7 +4,8 @@
  */
 
 var TIME_ZONE = 'America/New_York';
-var GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+var DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash-lite';
+var GEMINI_URL = geminiGenerateUrl(DEFAULT_GEMINI_MODEL);
 var MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024;
 var RAW_OUTPUT_LIMIT = 45000;
 var REPORT_ID_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -449,6 +450,15 @@ function buildPrompt(input) {
   lines.push('Report text:');
   lines.push(input.reportText || '');
   return lines.join('\n');
+}
+
+function geminiModelId(raw) {
+  var text = String(raw == null ? '' : raw).trim();
+  return text || DEFAULT_GEMINI_MODEL;
+}
+
+function geminiGenerateUrl(modelId) {
+  return 'https://generativelanguage.googleapis.com/v1beta/models/' + geminiModelId(modelId) + ':generateContent';
 }
 
 function buildGeminiRequest(prompt, attachments) {

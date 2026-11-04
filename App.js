@@ -290,8 +290,10 @@ function keepOriginalLink_(result, item) {
 }
 
 function callGemini_(input, attachments) {
-  var key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
+  var props = PropertiesService.getScriptProperties();
+  var key = props.getProperty('GEMINI_API_KEY');
   if (!key) return { ok: false, error: 'GEMINI_API_KEY is not set', raw: '' };
+  var url = geminiGenerateUrl(props.getProperty('GEMINI_MODEL'));
 
   var prompt = buildPrompt({
     jobNumber: input.jobNumber,
@@ -314,7 +316,7 @@ function callGemini_(input, attachments) {
   for (attempt = 1; attempt <= 2; attempt++) {
     var response;
     try {
-      response = UrlFetchApp.fetch(GEMINI_URL, options);
+      response = UrlFetchApp.fetch(url, options);
     } catch (err) {
       var message = err && err.message ? err.message : String(err);
       return { ok: false, error: 'Gemini request failed: ' + message, raw: '' };

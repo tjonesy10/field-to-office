@@ -1,6 +1,6 @@
 # F001 test report
 
-Offline run on this branch. No Google account and no live Gemini call were used. A passing offline test is not a live PASS when the acceptance test needs real Google behavior. Those rows stay UNKNOWN until the manual step below is done.
+The automated run does not call Google. A passing offline test is not a live PASS when the acceptance test needs real Google behavior. Those rows stay UNKNOWN until the manual step below is done. Operator-reported live facts are in their own section and are not captured output.
 
 Command:
 
@@ -8,7 +8,7 @@ Command:
 node --test
 ```
 
-Exit code: 0. 38 tests, 38 passed, 0 failed.
+Exit code: 0. Latest run after the gemini-3.5-flash-lite change: 40 tests, 40 passed, 0 failed (about 165 ms). The TAP block further down is an earlier 38-test capture.
 
 ## AT1–AT14
 
@@ -17,17 +17,27 @@ Exit code: 0. 38 tests, 38 passed, 0 failed.
 | AT1 | UNKNOWN | Partial: `AT1 setup creates the five tabs, exact headers, three jobs, and a form linked to the sheet` passed. The fake spreadsheet has the five tabs and exact headers, Jobs lists J-2401, J-2402, and J-2403, and `setDestination` is called once with this spreadsheet id. | Real Form linking. After Setup, confirm the five tabs and headers, the three jobs, and that the Form's response destination is this Sheet. |
 | AT2 | UNKNOWN | Partial: `AT2 each job folder has Daily Reports, Change Orders, and Photos, and the id is on Jobs` passed against a fake Drive. | Real Drive. Open `Field-to-Office Demo/Jobs/<Job # - Name>/` and confirm `Daily Reports`, `Change Orders`, and `Photos`. The folder id in the URL matches Jobs → Drive Folder ID. Date folders are not created by Setup. |
 | AT3 | UNKNOWN | Partial: `AT3 a second setup does not duplicate tabs, folders, the form, or the trigger` passed. The fake ends with one form, one `onReportSubmit` trigger, one demo folder, one of each tab, and four form questions. | The Triggers page is real Google UI. Run Setup again. Confirm no second tab, folder, or form. Extensions → Apps Script → Triggers shows exactly one trigger, function `onReportSubmit`, event On form submit. |
-| AT4 | UNKNOWN | Partial: `AT4 a text-only submission is logged first, then processed from one Gemini call` passed. Before the stubbed response returns, the row is `Processing` with the report text and Source `Form`. After a valid JSON body it is `Processed` with Summary and Total Hours. One POST to the Gemini 2.5 Flash URL, header `x-goog-api-key`, temperature 0.2. | Real Gemini output and the 1-minute bound. Submit text only for J-2402 and time it. Within 1 minute, Job Log has one new row, Status `Processed`, a Summary, Total Hours, Source `Form`. |
-| AT5 | UNKNOWN | Partial: `AT5 three crew members become three Crew Hours rows whose hours sum to the report` passed. Three rows share the Report ID and their Hours sum to Total Hours from the stubbed JSON. | Real Gemini quality. Submit a report that names 3 crew and their hours. Crew Hours has 3 rows for that Report ID, and the Hours sum equals what the report text says. |
-| AT6 | UNKNOWN | Partial: `AT6 a change order is a Pending flag and the Status column has the review dropdown` passed. The stubbed change order is written as Type `Change order`, Status `Pending`, with the evidence quote, and the Flags Status range has a list validation of Pending, Approved, Rejected. | Real Gemini wording and the dropdown rendering in Sheets. Submit a report that says `GC asked us to add 4 receptacles in Room 112, not on drawings`. Flags has a Change order row, Status Pending, Evidence Quote not empty, and the Status cell offers Pending / Approved / Rejected. |
-| AT7 | UNKNOWN | Partial: `AT7 a material shortage keeps quantity in Detail and fills Needed By` passed for stubbed JSON (`Detail` `200 ft`, Needed By `Thursday`). | Real Gemini quality. Submit a report that says `short 200 ft of 3/4 EMT, need by Thursday`. Flags has a Material shortage row, Detail contains `200`, Needed By is filled. |
-| AT8 | UNKNOWN | Partial: `AT8 photos and a voice note are renamed into the date folder and linked` passed in the fake. Two images and one audio file land in `Daily Reports/2026-11-03/` as `2026-11-03_J-2401_Luis-Ramirez_1.jpg`, `_2.png`, and `_3.m4a`, and the three link columns match. | Real Drive moves of Form uploads. Submit 2 photos and a voice note and confirm the folder, the names, and Photo Links, Voice Note Link, and Report Folder. |
+| AT4 | UNKNOWN | Partial: `AT4 a text-only submission is logged first, then processed from one Gemini call` passed. Before the stubbed response returns, the row is `Processing` with the report text and Source `Form`. After a valid JSON body it is `Processed` with Summary and Total Hours. One POST to the gemini-3.5-flash-lite URL, header `x-goog-api-key`, temperature 0.2. Live samples (below) came back Processed, including J-2402, with Source Sample rather than Form. The 1-minute timing was not reported. | Real Form source and the 1-minute bound. Submit text only for J-2402 and time it. Within 1 minute, Job Log has one new row, Status `Processed`, a Summary, Total Hours, Source `Form`. |
+| AT5 | UNKNOWN | Partial: `AT5 three crew members become three Crew Hours rows whose hours sum to the report` passed. Three rows share the Report ID and their Hours sum to Total Hours from the stubbed JSON. The live sample run wrote 7 Crew Hours rows in total. It did not check that one report's three rows sum to what that report text says. | Real Gemini quality for one report. Submit a report that names 3 crew and their hours. Crew Hours has 3 rows for that Report ID, and the Hours sum equals what the report text says. |
+| AT6 | UNKNOWN | Partial: `AT6 a change order is a Pending flag and the Status column has the review dropdown` passed offline. Live samples produced a Pending change-order flag on J-2401. Evidence Quote and the Status dropdown were not reported. | Evidence Quote and the dropdown. Submit a report that says `GC asked us to add 4 receptacles in Room 112, not on drawings`. Confirm Evidence Quote is not empty and the Status cell offers Pending, Approved, and Rejected. |
+| AT7 | UNKNOWN | Partial: `AT7 a material shortage keeps quantity in Detail and fills Needed By` passed for stubbed JSON (`Detail` `200 ft`, Needed By `Thursday`). Live samples produced a Pending material-shortage flag on J-2402. Detail and Needed By were not reported. | Detail contains `200` and Needed By is filled. Submit a report that says `short 200 ft of 3/4 EMT, need by Thursday` and check those two cells. |
+| AT8 | UNKNOWN | Partial: `AT8 photos and a voice note are renamed into the date folder and linked` passed in the fake. Two images and one audio file land in `Daily Reports/2026-11-03/` as `2026-11-03_J-2401_Luis-Ramirez_1.jpg`, `_2.png`, and `_3.m4a`, and the three link columns match. The live Form submission with a photo and a voice note has not been run. | Real Drive moves of Form uploads. Submit 2 photos and a voice note and confirm the folder, the names, and Photo Links, Voice Note Link, and Report Folder. |
 | AT9 | PASS | `AT9 an HTTP 400 or 401 keeps the row, the report text, and writes no crew or flags`. For both codes the row is appended as `Processing` first, then `Needs review`, Errors is `Gemini HTTP 400: API key not valid` or the 401 equivalent, Report Text is unchanged, Raw AI Output holds the body, and Crew Hours and Flags gain no rows. Neither code is retried. | None for this criterion. The HTTP body is stubbed. A live check with a bad property value is in the checklist if you want to see Google's own error text. |
 | AT10 | PASS | `AT10 invalid JSON is Needs review, says invalid JSON, and keeps the raw text`. Errors is exactly `invalid JSON`. Raw AI Output is `this is not json`. No Crew Hours or Flags rows. | None. The spec allows this to be simulated. |
 | AT11 | PASS | `AT11 an approved flag is unchanged by a later submission, and approval sends nothing`. After Status, PM Note, Reviewed By, and Reviewed At are edited, a second `onReportSubmit` leaves that row identical. No new Drive file is created. `App.js` and `Logic.js` contain no MailApp, GmailApp, sendEmail, timeBased, or everyMinutes. The only trigger type created is `ON_FORM_SUBMIT`. Dashboard cells are unchanged. | The test does not wait 10 wall-clock minutes. There is no timer to fire. The checklist still has you wait 10 minutes on the live Sheet so you can see it. |
-| AT12 | UNKNOWN | Partial: `AT12 dashboard formulas cover today, hours, open flags, and the 15-minute assumption` passed. Setup writes the formulas and does not rewrite them on a later submission. Est. minutes saved is `=B161*B162`, and B162 is the number 15 next to `Assumption, not measured`. | Formulas rendering in Sheets. After samples, open Dashboard and confirm today's reports, hours for the jobs that have crew rows, an open-flag count of at least 2 with a list, and Est. minutes saved = reports processed × 15, with the assumption label. |
-| AT13 | PASS | `AT13 loadSampleReports adds three sample rows once and skips them on the second run`. First run: 3 rows, Source `Sample`, jobs J-2401, J-2402, J-2403. Second run: still 3 rows, and UrlFetch is not called again. | None for the "no new rows" criterion. Whether live Gemini turns the sample text into a change order and a shortage is UNKNOWN; see the checklist. |
+| AT12 | UNKNOWN | Partial: `AT12 dashboard formulas cover today, hours, open flags, and the 15-minute assumption` passed offline. Est. minutes saved is `=B161*B162`, and B162 is the number 15 next to `Assumption, not measured`. Live: the operator reported no Dashboard errors. The sheet had exactly 2 Pending flags, which meets "at least 2" only if the count and the list were read; that reading was not reported. Hours by job for 3 jobs was not reported. | Today's reports, hours by job for 3 jobs, the open-flag count and list, and Est. minutes saved = reports processed × 15. Open Dashboard and check those four. |
+| AT13 | PASS | `AT13 loadSampleReports adds three sample rows once and skips them on the second run`. First run: 3 rows, Source `Sample`, jobs J-2401, J-2402, J-2403. Second run: still 3 rows, and UrlFetch is not called again. A second live run was not reported, so this stays the offline result. | None for the "no new rows" criterion. |
 | AT14 | PASS | `AT14 the repo contains no Gemini API key`, and the grep below. Exit code 1, no output. | None. |
+
+## Live run 2026-11-03 (operator-reported, Cosmo's account, via Groko)
+
+Operator-reported. This is not captured command output and not an agent observation of the Sheet.
+
+- A new AI Studio key returned HTTP 404, `models/gemini-2.5-flash is no longer available to new users`.
+- The live script was hot-fixed by pointing the generateContent URL at `models/gemini-3.5-flash-lite`. The repo now defaults to that model id and reads an optional script property named GEMINI_MODEL when it is set.
+- Load sample reports then came back Processed: 3 Job Log rows, 7 Crew Hours rows, and 2 Pending flags (a change order on J-2401 and a material shortage on J-2402).
+- Dashboard showed no errors.
+- The Form submission with a photo and a voice note has not been run live.
 
 ## Grep (AT14)
 
@@ -41,7 +51,7 @@ Result: no output. Exit code 1 (git grep's code for no matches).
 
 ## Full `node --test` output
 
-Captured on this branch before this report file existed. Exit code 0. A second `node --test` after this file was added also exited 0 (38 passed, about 144 ms). `git grep` on the tree that includes this file exited 1 with no output.
+Captured on this branch before this report file existed. Exit code 0. Later `node --test` runs, including the one after the model change and after this file, exited 0. The latest is 40 passed. `git grep` for an API key on the tree that includes this file exited 1 with no output.
 
 ```
 TAP version 13
