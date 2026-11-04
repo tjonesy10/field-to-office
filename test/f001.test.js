@@ -650,6 +650,74 @@ test('setup finishes without a key, and a missing key does not drop the submissi
   assert.equal(objects(world.ss.getSheetByName('Crew Hours'), headers(app, 'CREW_HEADERS')).length, 0);
 });
 
+test('dashboard FILTER spills format dates, and a second ensureFormats_ or setup leaves those formats', () => {
+  const { world, app } = ready();
+  const dash = world.ss.getSheetByName('Dashboard');
+  const flags = world.ss.getSheetByName('Flags');
+  const rows = app.DASH_ROWS;
+  const todayRows = rows.hoursLabel - rows.todayFormula;
+  const flagRows = rows.scoreLabel - rows.flagsList;
+  const submittedCol = app.JOB_LOG_HEADERS.indexOf('Submitted At') + 1;
+  const jobDateCol = app.JOB_LOG_HEADERS.indexOf('Report Date') + 1;
+  const flagDateCol = app.FLAG_HEADERS.indexOf('Report Date') + 1;
+  const reviewedCol = app.FLAG_HEADERS.indexOf('Reviewed At') + 1;
+
+  function matches(sheet, startRow, startCol, numRows, numCols) {
+    return sheet.formats.filter((entry) =>
+      entry.startRow === startRow &&
+      entry.startCol === startCol &&
+      entry.numRows === numRows &&
+      entry.numCols === numCols);
+  }
+
+  function onlyFormat(sheet, startRow, startCol, numRows, numCols) {
+    const found = matches(sheet, startRow, startCol, numRows, numCols);
+    assert.equal(found.length, 1);
+    return found[0].format;
+  }
+
+  assert.equal(onlyFormat(dash, rows.todayFormula, submittedCol, todayRows, 1), 'yyyy-mm-dd hh:mm');
+  assert.equal(onlyFormat(dash, rows.todayFormula, jobDateCol, todayRows, 1), 'yyyy-mm-dd');
+  const flagDateFormat = onlyFormat(flags, 2, flagDateCol, 999, 1);
+  const flagReviewedFormat = onlyFormat(flags, 2, reviewedCol, 999, 1);
+  assert.equal(flagDateFormat, 'yyyy-mm-dd');
+  assert.equal(flagReviewedFormat, 'yyyy-mm-dd hh:mm:ss');
+  assert.equal(onlyFormat(dash, rows.flagsList, flagDateCol, flagRows, 1), flagDateFormat);
+  assert.equal(onlyFormat(dash, rows.flagsList, reviewedCol, flagRows, 1), flagReviewedFormat);
+
+  assert.equal(rows.todayFormula + todayRows, rows.hoursLabel);
+  assert.equal(rows.flagsList + flagRows, rows.scoreLabel);
+  assert.equal(dash.formats.some((entry) => entry.startRow < rows.hoursLabel && entry.startRow + entry.numRows > rows.hoursLabel), false);
+  assert.equal(dash.formats.some((entry) => entry.startRow < rows.scoreLabel && entry.startRow + entry.numRows > rows.scoreLabel), false);
+  assert.equal(dash.formats.some((entry) => entry.startRow === rows.flagsLabel || entry.startRow === rows.flagsCount), false);
+
+  function effective(sheet) {
+    const map = {};
+    sheet.formats.forEach((entry) => {
+      map[[entry.startRow, entry.startCol, entry.numRows, entry.numCols].join(',')] = entry.format;
+    });
+    return map;
+  }
+
+  function snapshot() {
+    return world.ss.getSheets().map((sheet) => ({ name: sheet.getName(), formats: effective(sheet) }));
+  }
+
+  const before = snapshot();
+  app.ensureFormats_();
+  assert.deepEqual(snapshot(), before);
+  app.ensureFormats_();
+  assert.deepEqual(snapshot(), before);
+  app.setup();
+  assert.deepEqual(snapshot(), before);
+  matches(dash, rows.todayFormula, submittedCol, todayRows, 1).forEach((entry) => {
+    assert.equal(entry.format, 'yyyy-mm-dd hh:mm');
+  });
+  matches(dash, rows.flagsList, reviewedCol, flagRows, 1).forEach((entry) => {
+    assert.equal(entry.format, 'yyyy-mm-dd hh:mm:ss');
+  });
+});
+
 test('a thrown fetch and a lock timeout still leave a Job Log row', () => {
   const timedOut = ready();
   queue(timedOut.world, { throw: 'Timeout' });

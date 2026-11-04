@@ -344,3 +344,9 @@ Do this on your personal Google account after [SETUP.md](../../../SETUP.md). Use
 13. **AT10 and AT14** need no live step. AT10 was simulated. AT14 is the grep above.
 
 A row left on `Processing` means the run stopped early. The 6-minute limit is the usual reason. Check that row by hand. There is no retry button.
+
+## Dashboard spill date formats
+
+`dashboard FILTER spills format dates, and a second ensureFormats_ or setup leaves those formats` — PASS.
+
+`node --test`: exit code 0. 41 tests, 41 passed, 0 failed (about 155 ms).
