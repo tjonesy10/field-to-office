@@ -3,6 +3,7 @@
 Status: Ready for build. Planner: blueprint. Builder: forge.
 Repo: GitHub `tjonesy10/field-to-office`. Docs reach `main` only by PR.
 Related: [PRD](../../prd.md) · [Data dictionary](../../data-dictionary.md) · [Architecture](../../architecture.md) · [Process maps](../../process-maps.md)
+Terms follow [GLOSSARY.md](../../GLOSSARY.md).
 
 All jobs, people, and reports in this feature are fictional.
 
@@ -68,7 +69,7 @@ Setup is idempotent: a second run creates no duplicate tabs, folders, form, or t
 - `POST https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent`, where `GEMINI_MODEL` is an optional Script Property defaulting to `gemini-3.5-flash-lite` (ADR 0006).
 - Example: `POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent`
 - Header `x-goog-api-key: <GEMINI_API_KEY from Script Properties>`. The key never appears in code, the Sheet, or logs.
-- `generationConfig`: `responseMimeType: "application/json"`, `responseSchema` as below, `temperature: 0.2`.
+- `generationConfig`: `responseMimeType: "application/json"`, `responseSchema` as below. No `temperature`: `gemini-3.5-flash-lite` ignores it (ADR 0006). The existing `0.2` is harmless; remove it the next time this code changes.
 - The prompt tells Gemini to:
   - extract only what the report states
   - leave out anything it can't find

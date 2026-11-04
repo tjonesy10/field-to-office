@@ -20,4 +20,5 @@ Default to `gemini-3.5-flash-lite`. Read the model id from the optional Script P
 
 ## Consequences
 - Extraction quality on photos and audio should be spot-checked in the live run (AT5-AT7).
+- `temperature` is ignored by 3.5 Flash-Lite, per forge's reading of Google's migration guide, so the spec no longer sets it. Determinism relies on the `responseSchema`.
 - Production still uses Vertex AI, per ADR 0003.
