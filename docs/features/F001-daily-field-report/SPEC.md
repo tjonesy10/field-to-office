@@ -65,7 +65,8 @@ Setup is idempotent: a second run creates no duplicate tabs, folders, form, or t
 
 ### Gemini call
 
-- `POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
+- `POST https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent`, where `GEMINI_MODEL` is an optional Script Property defaulting to `gemini-3.5-flash-lite` (ADR 0006).
+- Example: `POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent`
 - Header `x-goog-api-key: <GEMINI_API_KEY from Script Properties>`. The key never appears in code, the Sheet, or logs.
 - `generationConfig`: `responseMimeType: "application/json"`, `responseSchema` as below, `temperature: 0.2`.
 - The prompt tells Gemini to:
@@ -187,7 +188,7 @@ Runs 3 fictional text-only reports, one per job, through the same pipeline, with
 ## Allowed dependencies
 
 - Apps Script built-ins: `SpreadsheetApp`, `FormApp`, `DriveApp`, `UrlFetchApp`, `PropertiesService`, `Utilities`, plus `ScriptApp` (triggers), `LockService` (concurrency), and `Logger`/`console`
-- Gemini REST API (`generativelanguage.googleapis.com`, model `gemini-2.5-flash`)
+- Gemini REST API (`generativelanguage.googleapis.com`, default model `gemini-3.5-flash-lite`, overridable via Script Property `GEMINI_MODEL`)
 - No npm libraries and no Apps Script libraries. `clasp` is optional, for pushing from the repo.
 
 ## Assumptions
@@ -199,16 +200,20 @@ Runs 3 fictional text-only reports, one per job, through the same pipeline, with
    - consumer daily quotas for UrlFetch and trigger runtime
    - Form file upload requires respondents to sign in with a Google account
    - Demo volume (tens of reports a day) is far below all of these.
-3. **AI:** Gemini 2.5 Flash through an AI Studio API key created under the same account. The key is stored as Script Property `GEMINI_API_KEY` and never committed. The AI Studio free tier may use inputs to improve Google's products, so only fictional data goes in.
+3. **AI:** Gemini (`gemini-3.5-flash-lite` by default, per ADR 0006) through an AI Studio API key created under the same account. The key is stored as Script Property `GEMINI_API_KEY` and never committed. The AI Studio free tier may use inputs to improve Google's products, so only fictional data goes in.
 4. **Repo:** GitHub `tjonesy10/field-to-office` is confirmed. Docs and code reach `main` by PR.
 5. The file-upload questions are added by hand, because `FormApp` can't create them.
 6. Report date can't default to today in Forms. Blank means the submission date.
 7. All times are America/New_York.
 8. The 15 minutes saved per report is an illustrative assumption, not a measurement.
+9. **Unknown job** (a Job value not in the Jobs tab): Gemini still runs on the report text so nothing is lost. Confirmed 2026-11-03 after build.
+10. **total_hours mismatch** (the total differs from the sum of crew hours): the row is still `Processed`. Confirmed 2026-11-03.
+11. **confidence outside 0-1** counts as a schema mismatch, so the row is handled like invalid JSON (`Needs review`). Confirmed 2026-11-03.
+12. **OAuth scope:** the script needs full Drive access (`https://www.googleapis.com/auth/drive`), because that's the only way to move Form uploads. This is acceptable on a personal demo account. In production, review the scope with IT. Confirmed 2026-11-03.
 
 ## Open questions
 
-None blocking. Minor items are logged as assumptions 5–8 above.
+None blocking. Minor items are logged as assumptions 5–12 above.
 
 ## ADRs
 
@@ -217,3 +222,4 @@ None blocking. Minor items are logged as assumptions 5–8 above.
 - [0003 Gemini multimodal extraction](../../adr/0003-gemini-multimodal-extraction.md)
 - [0004 Human-in-the-loop flags](../../adr/0004-human-in-the-loop-flags.md)
 - [0005 Sheets dashboard tab](../../adr/0005-sheets-dashboard-tab.md)
+- [0006 Gemini model: gemini-3.5-flash-lite](../../adr/0006-gemini-model-3-5-flash-lite.md) (supersedes the model choice in 0003)

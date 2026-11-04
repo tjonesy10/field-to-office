@@ -3,7 +3,7 @@
 **Purpose:** Let teams use AI to cut admin time while keeping company, employee, and customer data safe and keeping people accountable for decisions.
 
 **Approved tools (pilot)**
-- Gemini, through Google Workspace or the Gemini API (Gemini 2.5 Flash for Field-to-Office).
+- Gemini, through Google Workspace or the Gemini API (`gemini-3.5-flash-lite` for Field-to-Office).
 - Any other AI tool goes through the approval path below first.
 - The pilot uses fictional data only, because AI Studio free-tier terms may let Google use inputs.
 
